@@ -94,7 +94,7 @@ function uploadFile(file){
         li.querySelectorAll('span')[0].innerHTML = Math.round(percent_complete) + '%'
         li.querySelectorAll('span')[1].style.width = percent_complete + '%'
     }
-    http.open('POST', 'sender.php', true)
+    http.open('POST', 'sender.js', true)
     http.send(data)
     li.querySelector('.cross').onclick = () => http.abort()
     http.onabort = () => li.remove()
