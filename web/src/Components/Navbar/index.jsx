@@ -1,52 +1,67 @@
+// Navbar.js
 import React from "react";
-import {
-    Nav,
-    NavLink,
-    Bars,
-    NavMenu,
-    NavBtn,
-    NavBtnLink,
-} from "./navbarElements.jsx";
+import { Nav, NavLink, Bars, NavMenu, NavBtn, NavBtnLink } from "./navbarElements.jsx";
+import { useAuth } from "../AuthContext"; // Import the auth context
 
 const Navbar = () => {
-    return (
-        <>
-            <Nav>
-                <Bars />
+  const { userType, logout } = useAuth();
 
-                <NavMenu>
-                     <NavLink to="/home" >
-                        Home
-                    </NavLink>
-                    <NavLink to="/about" >
-                        About
-                    </NavLink>
-                    <NavLink to="/events" activeStyle>
-                        Events
-                    </NavLink>
-                    <NavLink to="/annual" activeStyle>
-                        Annual Report
-                    </NavLink>
-                    <NavLink to="/team" activeStyle>
-                        Teams
-                    </NavLink>
-                    <NavLink to="/blogs" activeStyle>
-                        Blogs
-                    </NavLink>
-                    <NavLink to="/sign-up" activeStyle>
-                        Sign Up
-                    </NavLink>
-                    {/* Second Nav */}
-                    {/* <NavBtnLink to='/sign-in'>Sign In</NavBtnLink> */}
-                </NavMenu>
-                <NavBtn>
-                    <NavBtnLink to="/signin">
-                        Sign In
-                    </NavBtnLink>
-                </NavBtn>
-            </Nav>
-        </>
-    );
+  return (
+    <>
+      <Nav>
+        <Bars />
+        <NavMenu>
+          <NavLink to="/home" activeStyle>
+            Home
+          </NavLink>
+
+          {/* Conditionally render links based on userType */}
+          {userType === "user" && (
+            <>
+              <NavLink to="/upload" activeStyle>
+                Upload
+              </NavLink>
+              <NavLink to="/resume" activeStyle>
+                Resume
+              </NavLink>
+            </>
+          )}
+
+          {userType === "staff" && (
+            <>
+              <NavLink to="/search" activeStyle>
+                Search
+              </NavLink>
+              <NavLink to="/upload" activeStyle>
+                Upload
+              </NavLink>
+            </>
+          )}
+          
+          {/* Show Login and Sign Up when user is not logged in */}
+          {!userType && (
+            <>
+              <NavLink to="/login" activeStyle>
+                Login
+              </NavLink>
+              <NavLink to="/signup" activeStyle>
+                Sign Up
+              </NavLink>
+            </>
+          )}
+        </NavMenu>
+
+        {/* Show Logout button when user is logged in */}
+        {userType && (
+          <NavBtn>
+            <NavBtnLink to="/" onClick={logout}>
+              Logout
+            </NavBtnLink>
+          </NavBtn>
+        )}
+      </Nav>
+    </>
+  );
 };
 
 export default Navbar;

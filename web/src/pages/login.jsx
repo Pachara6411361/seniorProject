@@ -1,21 +1,20 @@
-// SignUp.js
+// Login.js
 import React, { useState } from "react";
-import { useAuth } from "../Components/AuthContext";
+import { useAuth } from '../Components/AuthContext';
 import { useNavigate } from "react-router-dom";
 
-const SignUp = () => {
+const Login = () => {
   const [userType, setUserType] = useState("");
   const [error, setError] = useState("");
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSignUp = (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
 
     if (userType === "user" || userType === "staff") {
-      // Assuming sign-up process is successful
       login(userType);
-      navigate("/home"); // Redirect to home after sign-up
+      navigate("/home"); // Redirect to home after login
     } else {
       setError("Invalid user type. Please select either 'user' or 'staff'.");
     }
@@ -23,8 +22,8 @@ const SignUp = () => {
 
   return (
     <div>
-      <h2>Sign Up</h2>
-      <form onSubmit={handleSignUp}>
+      <h2>Login</h2>
+      <form onSubmit={handleLogin}>
         <div>
           <label>
             User Type:
@@ -36,10 +35,10 @@ const SignUp = () => {
           </label>
         </div>
         {error && <p style={{ color: "red" }}>{error}</p>}
-        <button type="submit">Sign Up</button>
+        <button type="submit">Login</button>
       </form>
     </div>
   );
 };
 
-export default SignUp;
+export default Login;
