@@ -1,14 +1,32 @@
 import React from "react";
-import FileDropZone from "./FileDropZone"
-
+import FileDropZone from "./FileDropZone";
+import styled from "styled-components";
 
 const Upload = () => {
   return (
-    <div>
-      <h1>File Drag and Drop Example</h1>
+    <UploadContainer>
+      <Title>File Drag and Drop Here</Title>
       <FileDropZone />
-    </div>
+    </UploadContainer>
   );
 };
 
 export default Upload;
+
+// Styled components for centering the title
+const UploadContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+`;
+
+const Title = styled.h1`
+  text-align: center;
+  font-size: 2rem;
+  color: #002147;
+  margin-bottom: 20px;
+`;
+

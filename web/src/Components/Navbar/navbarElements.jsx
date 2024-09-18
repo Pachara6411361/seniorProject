@@ -2,33 +2,42 @@ import { FaBars } from "react-icons/fa";
 import { NavLink as Link } from "react-router-dom";
 import styled from "styled-components";
 
+// Main Nav container
 export const Nav = styled.nav`
-    background: #63d471;
+    background: #002147; /* Dark Blue background */
     height: 85px;
     display: flex;
     justify-content: space-between;
     padding: 0.2rem calc((100vw - 1000px) / 2);
     z-index: 12;
-    /* Third Nav */
-    /* justify-content: flex-start; */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow */
 `;
 
+// Navigation Links styling
 export const NavLink = styled(Link)`
-    color: #808080;
+    color: #ffffff; /* White color for nav links */
     display: flex;
     align-items: center;
     text-decoration: none;
     padding: 0 1rem;
     height: 100%;
     cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: bold;
+
+    &:hover {
+        color: #32CD32; /* Bright green on hover */
+    }
+
     &.active {
-        color: #000000;
+        color: #32CD32; /* Bright green for the active link */
     }
 `;
 
+// Bars for Mobile View
 export const Bars = styled(FaBars)`
     display: none;
-    color: #808080;
+    color: #ffffff; /* White color for the bars */
     @media screen and (max-width: 768px) {
         display: block;
         position: absolute;
@@ -40,47 +49,43 @@ export const Bars = styled(FaBars)`
     }
 `;
 
+// Container for Menu Links
 export const NavMenu = styled.div`
     display: flex;
     align-items: center;
     margin-right: -24px;
-    /* Second Nav */
-    /* margin-right: 24px; */
-    /* Third Nav */
-    /* width: 100vw;
-  white-space: nowrap; */
+
     @media screen and (max-width: 768px) {
         display: none;
     }
 `;
 
+// Button Container
 export const NavBtn = styled.nav`
     display: flex;
     align-items: center;
     margin-right: 24px;
-    /* Third Nav */
-    /* justify-content: flex-end;
-  width: 100vw; */
+
     @media screen and (max-width: 768px) {
         display: none;
     }
 `;
 
+// Button Styling
 export const NavBtnLink = styled(Link)`
     border-radius: 4px;
-    background: #808080;
+    background: #32CD32; /* Bright green for button */
     padding: 10px 22px;
-    color: #000000;
+    color: #ffffff; /* White text */
     outline: none;
     border: none;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
     text-decoration: none;
-    /* Second Nav */
     margin-left: 24px;
+
     &:hover {
-        transition: all 0.2s ease-in-out;
-        background: #fff;
-        color: #808080;
+        background: #ffffff; /* White background on hover */
+        color: #32CD32; /* Green text on hover */
     }
 `;

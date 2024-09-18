@@ -1,4 +1,4 @@
-// Login.js
+// src/pages/Login.js
 import React, { useState } from "react";
 import { useAuth } from "../Components/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -27,31 +27,36 @@ const Login = () => {
   };
 
   return (
-     
+    <FormContainer>
       <Form onSubmit={handleLogin}>
-        <h2>Login</h2>
-        <Input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
+        <h2>Login to Your Account</h2>
+        <Input 
+          type="email" 
+          placeholder="Email" 
+          value={email} 
+          onChange={(e) => setEmail(e.target.value)} 
+          required 
         />
-        <Input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
+        <Input 
+          type="password" 
+          placeholder="Password" 
+          value={password} 
+          onChange={(e) => setPassword(e.target.value)} 
+          required 
         />
-        {error && <ErrorMessage>{error}</ErrorMessage>}
         <Button type="submit">Login</Button>
+        {error && <ErrorMessage>{error}</ErrorMessage>}
+        <p>
+          Don't have an account? <a href="/signup">Sign Up</a>
+        </p>
       </Form>
-    
+    </FormContainer>
   );
 };
 
 export default Login;
+
+// Styled components
 
 const FormContainer = styled.div`
   display: flex;
@@ -62,15 +67,17 @@ const FormContainer = styled.div`
 `;
 
 const Form = styled.form`
-  background: white;
+  background:#0a1f44;
   padding: 40px;
   border-radius: 8px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   text-align: center;
+  width: 100%;
+  max-width: 400px;
 `;
 
 const Input = styled.input`
-  width: 50%;
+  width: 100%;
   padding: 12px;
   margin: 10px 0;
   border: 1px solid #ddd;
@@ -79,7 +86,7 @@ const Input = styled.input`
 `;
 
 const Button = styled.button`
-  width: 50%;
+  width: 100%;
   padding: 12px;
   background-color: #4285f4;
   color: white;

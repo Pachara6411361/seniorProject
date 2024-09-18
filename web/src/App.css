@@ -1,42 +1,73 @@
-#root {
-  max-width: 100%;
-  margin: 0 auto;
-  padding: auto;
+/* Global Styles */
+body {
+  background-color: #002147; /* Dark blue background */
+  color: white;
+  font-family: 'Poppins', sans-serif; /* or any other preferred font */
+}
+
+/* Headings */
+h1, h2 {
+  color: white;
+  font-weight: bold;
+}
+
+h1 span {
+  color: #32CD32; /* Bright green for emphasized text */
+}
+
+/* Paragraphs */
+p {
+  color: #d0d0d0; /* Light gray text for paragraphs */
+}
+
+/* Buttons */
+button {
+  background-color: #32CD32; /* Bright green background */
+  border: none;
+  color: white;
+  padding: 15px 30px;
+  font-size: 1.2em;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #28a745; /* Darker green on hover */
+}
+
+/* Secondary Button */
+.secondary-button {
+  background-color: transparent;
+  border: 2px solid #32CD32; /* Green border */
+  color: #32CD32;
+  padding: 15px 30px;
+  border-radius: 8px;
+  margin-left: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.secondary-button:hover {
+  background-color: #32CD32;
+  color: white;
+}
+
+/* Links */
+a {
+  color: #61dafb; /* Lighter blue for links */
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: #32CD32; /* Green on hover */
+}
+
+/* Footer */
+footer {
+  background-color: #002147; /* Same dark blue as body */
+  color: white;
+  padding: 20px;
   text-align: center;
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
 }

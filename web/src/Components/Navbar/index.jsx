@@ -32,9 +32,7 @@ const Navbar = () => {
               <NavLink to="/search" activeStyle>
                 Search
               </NavLink>
-              <NavLink to="/upload" activeStyle>
-                Upload
-              </NavLink>
+             
             </>
           )}
           

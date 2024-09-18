@@ -13,6 +13,7 @@ import SearchPage from "./pages/SearchPage";
 import ResumePage from "./pages/ResumePage";
 import  { AuthProvider } from "./Components/AuthContext"
 import Login from "./pages/login";
+import ResumeDetailsPage from './ResumeDetailsPage.jsx';
 
 function App() {
     return (
@@ -31,6 +32,8 @@ function App() {
                 <Route path="/resume" element={<ResumePage />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<SignUp />} />
+                <Route path="/resume/:name" element={<ResumeDetailsPage />} />
+
             </Routes>
         </Router>
         </AuthProvider>
