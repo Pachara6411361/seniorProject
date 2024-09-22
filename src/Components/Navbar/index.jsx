@@ -1,7 +1,14 @@
 // Navbar.js
 import React from "react";
-import { Nav, NavLink, Bars, NavMenu, NavBtn, NavBtnLink } from "./navbarElements.jsx";
-import { useAuth } from "../AuthContext"; // Import the auth context
+import {
+  Nav,
+  NavLink,
+  Bars,
+  NavMenu,
+  NavBtn,
+  NavBtnLink,
+} from "./navbarElements.jsx";
+import { useAuth } from "../AuthContext.jsx"; // Import the auth context
 
 const Navbar = () => {
   const { userType, logout } = useAuth();
@@ -32,10 +39,9 @@ const Navbar = () => {
               <NavLink to="/search" activeStyle>
                 Search
               </NavLink>
-             
             </>
           )}
-          
+
           {/* Show Login and Sign Up when user is not logged in */}
           {!userType && (
             <>
