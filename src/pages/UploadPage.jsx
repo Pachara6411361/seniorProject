@@ -1,17 +1,17 @@
 import React from "react";
-import FileDropZone from "./FileDropZone";
+import DropFileInput from "../components/DropFileInput";
 import styled from "styled-components";
 
-const Upload = () => {
+const UploadPage = () => {
   return (
     <UploadContainer>
       <Title>File Drag and Drop Here</Title>
-      <FileDropZone />
+      <DropFileInput />
     </UploadContainer>
   );
 };
 
-export default Upload;
+export default UploadPage;
 
 // Styled components for centering the title
 const UploadContainer = styled.div`
@@ -29,4 +29,3 @@ const Title = styled.h1`
   color: #002147;
   margin-bottom: 20px;
 `;
-

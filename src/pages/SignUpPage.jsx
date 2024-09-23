@@ -1,11 +1,11 @@
 // Signup.jsx
 import React, { useState } from "react";
-import { useAuth } from "../Components/AuthContext";
+import { useAuth } from "../hooks/AuthContext";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useMediaQuery } from "react-responsive";
 
-const Signup = () => {
+const SignUpPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -62,7 +62,7 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default SignUpPage;
 
 const FormContainer = styled.div`
   display: flex;

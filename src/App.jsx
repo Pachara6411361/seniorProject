@@ -1,19 +1,14 @@
 import React from "react";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import "./App.css";
-import Navbar from "./Components/Navbar/index.jsx";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./pages/index.jsx";
-import About from "./pages/about.jsx";
-import Events from "./pages/events.jsx";
-import AnnualReport from "./pages/annual.jsx";
-import Teams from "./pages/team.jsx";
-import Upload from "./pages/upload.jsx";
-import SignUp from "./pages/signup.jsx";
-import SearchPage from "./pages/SearchPage.jsx";
+import Navbar from "./components/Navbar/Navbar.jsx";
+import { AuthProvider } from "./hooks/AuthContext.jsx";
+import HomePage from "./pages/HomePage.jsx";
+import LoginPage from "./pages/LoginPage.jsx";
 import ResumePage from "./pages/ResumePage.jsx";
-import { AuthProvider } from "./Components/AuthContext.jsx";
-import Login from "./pages/login.jsx";
-import ResumeDetailsPage from "./ResumeDetailsPage.jsx";
+import SearchPage from "./pages/SearchPage.jsx";
+import SignUpPage from "./pages/SignUpPage.jsx";
+import UploadPage from "./pages/UploadPage.jsx";
 
 function App() {
   return (
@@ -21,18 +16,12 @@ function App() {
       <Router>
         <Navbar />
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/events" element={<Events />} />
-          <Route path="/annual" element={<AnnualReport />} />
-          <Route path="/team" element={<Teams />} />
-          <Route path="/upload" element={<Upload />} />
-          <Route path="/search" element={<SearchPage />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/upload" element={<UploadPage />} />
           <Route path="/resume" element={<ResumePage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/resume/:name" element={<ResumeDetailsPage />} />
+          <Route path="/search" element={<SearchPage />} />
         </Routes>
       </Router>
     </AuthProvider>
