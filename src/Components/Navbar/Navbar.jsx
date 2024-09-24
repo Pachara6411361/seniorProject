@@ -3,55 +3,53 @@ import React from "react";
 import { FaBars } from "react-icons/fa";
 import { NavLink as Link } from "react-router-dom";
 import styled from "styled-components";
-import { useAuth } from "../../hooks/AuthContext.jsx"; // Import the auth context
+import { useAuth } from "../../hooks/AuthContext"; // Import the auth context
+import Role from "../../constants/Role";
 
 const Navbar = () => {
-  const { userType, logout } = useAuth();
+  const { userRole, isLoggedIn, logout } = useAuth();
 
   return (
     <>
       <Nav>
         <Bars />
         <NavMenu>
-          <NavLink to="/" activeStyle>
+          <NavLink to="/" activestyle="true">
             Home
           </NavLink>
 
-          {/* Conditionally render links based on userType */}
-          {userType === "user" && (
+          {userRole === Role.JOB_SEEKER && (
             <>
-              <NavLink to="/upload" activeStyle>
+              <NavLink to="/upload" activestyle="true">
                 Upload
               </NavLink>
-              <NavLink to="/resume" activeStyle>
+              <NavLink to="/resume" activestyle="true">
                 Resume
               </NavLink>
             </>
           )}
 
-          {userType === "staff" && (
+          {userRole === Role.RECRUITER && (
             <>
-              <NavLink to="/search" activeStyle>
+              <NavLink to="/search" activestyle="true">
                 Search
               </NavLink>
             </>
           )}
 
-          {/* Show Login and Sign Up when user is not logged in */}
-          {!userType && (
+          {!isLoggedIn && (
             <>
-              <NavLink to="/login" activeStyle>
+              <NavLink to="/login" activestyle="true">
                 Login
               </NavLink>
-              <NavLink to="/register" activeStyle>
+              <NavLink to="/register" activestyle="true">
                 Register
               </NavLink>
             </>
           )}
         </NavMenu>
 
-        {/* Show Logout button when user is logged in */}
-        {userType && (
+        {isLoggedIn && (
           <NavBtn>
             <NavBtnLink to="/" onClick={logout}>
               Logout

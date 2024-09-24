@@ -32,7 +32,7 @@ export const registerRecruiter = async (payload) => {
   return response.data;
 };
 
-export const loginRecuiter = async (payload) => {
+export const loginRecruiter = async (payload) => {
   const response = await apiClient.post("/recruiters/login", payload);
   return response.data;
 };

@@ -19,7 +19,6 @@ const HomePage = () => {
         style={{
           height: "100%",
           width: "100%",
-          padding: "5%",
         }}
       >
         <Image
@@ -39,7 +38,6 @@ const HomePage = () => {
         style={{
           height: "100%",
           width: "100%",
-          padding: "5%",
         }}
       >
         <h1>Resume Extraction Application</h1>

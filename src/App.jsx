@@ -9,6 +9,7 @@ import ResumePage from "./pages/ResumePage.jsx";
 import SearchPage from "./pages/SearchPage.jsx";
 import RegisterPage from "./pages/RegisterPage.jsx";
 import UploadPage from "./pages/UploadPage.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 function App() {
   return (
@@ -19,9 +20,19 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/upload" element={<UploadPage />} />
-          <Route path="/resume" element={<ResumePage />} />
-          <Route path="/search" element={<SearchPage />} />
+          {/* Protected routes */}
+          <Route
+            path="/upload"
+            element={<ProtectedRoute element={<UploadPage />} />}
+          />
+          <Route
+            path="/resume"
+            element={<ProtectedRoute element={<ResumePage />} />}
+          />
+          <Route
+            path="/search"
+            element={<ProtectedRoute element={<SearchPage />} />}
+          />
         </Routes>
       </Router>
     </AuthProvider>

@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useAuth } from "../hooks/AuthContext";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { useMediaQuery } from "react-responsive";
 import { registerJobSeeker, registerRecruiter } from "../services/ApiClient";
 import Role from "../constants/Role";
 
@@ -16,11 +16,15 @@ const RegisterPage = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [role, setRole] = useState(Role.JOB_SEEKER);
   const [error, setError] = useState("");
-
+  const { isLoggedIn } = useAuth();
   const navigate = useNavigate();
 
-  const isDesktopOrLaptop = useMediaQuery({ query: "(min-width: 1224px)" });
-  const isTabletOrMobile = useMediaQuery({ query: "(max-width: 1224px)" });
+  useEffect(() => {
+    // Redirect if already authenticated
+    if (isLoggedIn) {
+      navigate("/"); // Redirect to home page
+    }
+  }, [isLoggedIn, navigate]);
 
   const handleRegister = async (e) => {
     e.preventDefault();
