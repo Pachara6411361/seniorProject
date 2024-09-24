@@ -26,3 +26,13 @@ export const loginJobSeeker = async (payload) => {
   const response = await apiClient.post("/jobseekers/login", payload);
   return response.data;
 };
+
+export const registerRecruiter = async (payload) => {
+  const response = await apiClient.post("/recruiters/register", payload);
+  return response.data;
+};
+
+export const loginRecuiter = async (payload) => {
+  const response = await apiClient.post("/recruiters/login", payload);
+  return response.data;
+};
