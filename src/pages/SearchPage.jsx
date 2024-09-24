@@ -14,7 +14,7 @@ const SearchPage = () => {
 
   const fetchProfilesData = async () => {
     try {
-      const result = await getProfiles(query);
+      const result = await getProfiles(query.trim());
 
       if (result.status_code === 200) {
         const mappedResumes = result.data
@@ -227,7 +227,7 @@ const styles = {
     cursor: "pointer",
   },
   noResults: {
-    color: "#ff0000",
+    color: "#ffffff",
     fontWeight: "bold",
   },
 };
