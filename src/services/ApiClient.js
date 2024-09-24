@@ -36,3 +36,8 @@ export const loginRecruiter = async (payload) => {
   const response = await apiClient.post("/recruiters/login", payload);
   return response.data;
 };
+
+export const getProfileById = async (profileId) => {
+  const response = await apiClient.get(`/profiles/${profileId}`);
+  return response.data;
+};

@@ -1,58 +1,76 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
+import { getProfileById } from "../services/ApiClient";
+import { useAuth } from "../hooks/AuthContext";
 
 const initialResumeData = {
-  personalDetails: {
-    name: "John Doe",
-    email: "johndoe@example.com",
-    phone: "123-456-7890",
+  id: "",
+  email: "",
+  first_name: "",
+  last_name: "",
+  mobile_number: "",
+  profile: {
+    name: "",
+    email: "",
+    mobile_number: "",
+    skills: [],
+    college_name: "",
+    degree: "",
+    designation: [],
+    experience: [],
+    company_names: "",
+    no_of_pages: 0,
+    total_experience: 0.0,
   },
-  workExperience: [
-    {
-      company: "Company A",
-      position: "Software Engineer",
-      duration: "2019 - 2022",
-      description: "Worked on various web applications.",
-    },
-    {
-      company: "Company B",
-      position: "Junior Developer",
-      duration: "2017 - 2019",
-      description: "Assisted in developing e-commerce platforms.",
-    },
-  ],
-  education: [
-    {
-      institution: "University X",
-      degree: "B.Sc. in Computer Science",
-      graduationYear: "2017",
-    },
-  ],
-  skills: ["JavaScript", "React", "Node.js", "CSS"],
 };
 
 const ResumePage = () => {
   const [resumeData, setResumeData] = useState(initialResumeData);
-  const [isEditing, setIsEditing] = useState(false);
+  const { userId } = useAuth();
+  const navigate = useNavigate();
 
-  const handleInputChange = (e, section, index = null, field = null) => {
-    const value = e.target.value;
-    const updatedResume = { ...resumeData };
-
-    if (index !== null && field !== null) {
-      updatedResume[section][index][field] = value;
-    } else {
-      updatedResume[section] = { ...updatedResume[section], [e.target.name]: value };
+  useEffect(() => {
+    if (userId) {
+      fetchProfileData(userId);
     }
+  }, [userId]);
 
-    setResumeData(updatedResume);
+  const fetchProfileData = async (userId) => {
+    try {
+      const result = await getProfileById(userId);
+
+      if (result.status_code === 200 && result.data.profile !== null) {
+        setResumeData(mapResumeData(result.data));
+      } else {
+        navigate("/upload");
+      }
+    } catch (error) {
+      console.error("Error fetch profile data:", error.message);
+    }
   };
 
-  const toggleEditing = () => setIsEditing(!isEditing);
-
-  const saveResumeData = () => {
-    console.log("Resume Data Saved:", resumeData);
-    toggleEditing();
+  const mapResumeData = (data) => {
+    return {
+      id: data?.id ?? "",
+      email: data?.email ?? "",
+      first_name: data?.first_name ?? "",
+      last_name: data?.last_name ?? "",
+      mobile_number: data?.mobile_number ?? "",
+      profile: {
+        name: data?.profile?.name ?? "",
+        email: data?.profile?.email ?? "",
+        mobile_number: data?.profile?.mobile_number ?? "",
+        skills: data?.profile?.skills ?? [],
+        college_name: data?.profile?.college_name ?? "",
+        degree: data?.profile?.degree ?? "",
+        designation: data?.profile?.designation ?? [],
+        experience: data?.profile?.experience ?? [],
+        company_names: data?.profile?.company_names ?? "",
+        no_of_pages: data?.profile?.no_of_pages ?? 0,
+        total_experience: data?.profile?.total_experience ?? 0.0,
+      },
+    };
   };
 
   return (
@@ -61,146 +79,54 @@ const ResumePage = () => {
 
       <Section>
         <SectionTitle>Personal Details</SectionTitle>
-        {isEditing ? (
-          <EditContainer>
-            <label>Name: </label>
-            <input
-              type="text"
-              name="name"
-              value={resumeData.personalDetails.name}
-              onChange={(e) => handleInputChange(e, "personalDetails")}
-            />
-            <label>Email: </label>
-            <input
-              type="email"
-              name="email"
-              value={resumeData.personalDetails.email}
-              onChange={(e) => handleInputChange(e, "personalDetails")}
-            />
-            <label>Phone: </label>
-            <input
-              type="tel"
-              name="phone"
-              value={resumeData.personalDetails.phone}
-              onChange={(e) => handleInputChange(e, "personalDetails")}
-            />
-          </EditContainer>
-        ) : (
-          <DisplayContainer>
-            <p><strong>Name:</strong> {resumeData.personalDetails.name}</p>
-            <p><strong>Email:</strong> {resumeData.personalDetails.email}</p>
-            <p><strong>Phone:</strong> {resumeData.personalDetails.phone}</p>
-          </DisplayContainer>
-        )}
+        <DisplayContainer>
+          <p>
+            <strong>Name:</strong>{" "}
+            {resumeData.first_name + " " + resumeData.last_name}
+          </p>
+          <p>
+            <strong>Email:</strong> {resumeData.email}
+          </p>
+          <p>
+            <strong>Phone:</strong> {resumeData.mobile_number}
+          </p>
+        </DisplayContainer>
       </Section>
 
       <Section>
         <SectionTitle>Work Experience</SectionTitle>
-        {resumeData.workExperience.map((job, index) => (
-          <WorkItem key={index}>
-            {isEditing ? (
-              <>
-                <label>Company: </label>
-                <input
-                  type="text"
-                  value={job.company}
-                  onChange={(e) => handleInputChange(e, "workExperience", index, "company")}
-                />
-                <label>Position: </label>
-                <input
-                  type="text"
-                  value={job.position}
-                  onChange={(e) => handleInputChange(e, "workExperience", index, "position")}
-                />
-                <label>Duration: </label>
-                <input
-                  type="text"
-                  value={job.duration}
-                  onChange={(e) => handleInputChange(e, "workExperience", index, "duration")}
-                />
-                <label>Description: </label>
-                <input
-                  type="text"
-                  value={job.description}
-                  onChange={(e) => handleInputChange(e, "workExperience", index, "description")}
-                />
-              </>
-            ) : (
-              <>
-                <p><strong>Company:</strong> {job.company}</p>
-                <p><strong>Position:</strong> {job.position}</p>
-                <p><strong>Duration:</strong> {job.duration}</p>
-                <p><strong>Description:</strong> {job.description}</p>
-              </>
-            )}
-          </WorkItem>
-        ))}
+        <ul>
+          {resumeData.profile.designation.map((item, index) => (
+            <li key={index}>{item}</li>
+          ))}
+        </ul>
       </Section>
 
       <Section>
         <SectionTitle>Education</SectionTitle>
-        {resumeData.education.map((edu, index) => (
-          <EducationItem key={index}>
-            {isEditing ? (
-              <>
-                <label>Institution: </label>
-                <input
-                  type="text"
-                  value={edu.institution}
-                  onChange={(e) => handleInputChange(e, "education", index, "institution")}
-                />
-                <label>Degree: </label>
-                <input
-                  type="text"
-                  value={edu.degree}
-                  onChange={(e) => handleInputChange(e, "education", index, "degree")}
-                />
-                <label>Graduation Year: </label>
-                <input
-                  type="text"
-                  value={edu.graduationYear}
-                  onChange={(e) => handleInputChange(e, "education", index, "graduationYear")}
-                />
-              </>
-            ) : (
-              <>
-                <p><strong>Institution:</strong> {edu.institution}</p>
-                <p><strong>Degree:</strong> {edu.degree}</p>
-                <p><strong>Graduation Year:</strong> {edu.graduationYear}</p>
-              </>
-            )}
-          </EducationItem>
-        ))}
+        <EducationItem>
+          <>
+            <p>
+              <strong>Institution:</strong> {resumeData.profile.college_name}
+            </p>
+            <p>
+              <strong>Degree:</strong> {resumeData.profile.degree}
+            </p>
+          </>
+        </EducationItem>
       </Section>
 
       <Section>
         <SectionTitle>Skills</SectionTitle>
-        {isEditing ? (
-          <EditContainer>
-            {resumeData.skills.map((skill, index) => (
-              <input
-                key={index}
-                type="text"
-                value={skill}
-                onChange={(e) => handleInputChange(e, "skills", index)}
-              />
-            ))}
-          </EditContainer>
-        ) : (
-          <ul>
-            {resumeData.skills.map((skill, index) => (
-              <li key={index}>{skill}</li>
-            ))}
-          </ul>
-        )}
+        <ul>
+          {resumeData.profile.skills.map((skill, index) => (
+            <li key={index}>{skill}</li>
+          ))}
+        </ul>
       </Section>
 
       <ButtonContainer>
-        {isEditing ? (
-          <Button onClick={saveResumeData}>Save</Button>
-        ) : (
-          <Button onClick={toggleEditing}>Edit</Button>
-        )}
+        <Button onClick={() => navigate("/upload")}>Re-upload</Button>
       </ButtonContainer>
     </ResumeContainer>
   );
@@ -250,15 +176,6 @@ const DisplayContainer = styled.div`
 
   strong {
     color: green; /* Ensure strong elements are green */
-  }
-`;
-
-const WorkItem = styled.div`
-  margin-bottom: 20px;
-  color: green; /* Ensure work items are green */
-  p {
-    margin: 5px 0;
-    color: green; /* Paragraph text inside work items in green */
   }
 `;
 
