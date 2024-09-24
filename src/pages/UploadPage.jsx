@@ -1,8 +1,13 @@
 import React from "react";
 import DropFileInput from "../components/DropFileInput";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/AuthContext";
 
 const UploadPage = () => {
+  const { userId } = useAuth();
+  const navigate = useNavigate();
+
   return (
     <UploadContainer>
       <Title>File Drag and Drop Here</Title>

@@ -1,365 +1,70 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { getProfiles } from "../services/ApiClient";
 
 const SearchPage = () => {
-  const resumes = [
-    {
-      name: "John Doe",
-      age: 35,
-      gender: "Male",
-      workRecord: "5 years at Company X",
-      workExperience: [
-        {
-          company: "Company A",
-          position: "Software Engineer",
-          duration: "2019 - 2022",
-        },
-        {
-          company: "Company B",
-          position: "Junior Developer",
-          duration: "2017 - 2019",
-        },
-      ],
-      education: {
-        institution: "University X",
-        degree: "B.Sc. in Computer Science",
-        graduationYear: "2017",
-      },
-      skills: ["JavaScript", "React", "Node.js", "HTML", "CSS"],
-    },
-    {
-      name: "Jane Smith",
-      age: 30,
-      gender: "Female",
-      workRecord: "3 years at Company Y",
-      workExperience: [
-        {
-          company: "Company Y",
-          position: "Data Analyst",
-          duration: "2020 - 2023",
-        },
-      ],
-      education: {
-        institution: "University Y",
-        degree: "M.Sc. in Data Science",
-        graduationYear: "2019",
-      },
-      skills: ["Python", "R", "SQL", "Pandas", "NumPy"],
-    },
-    {
-      name: "Mike Johnson",
-      age: 40,
-      gender: "Male",
-      workRecord: "7 years at Company Z",
-      workExperience: [
-        {
-          company: "Company Z",
-          position: "Project Manager",
-          duration: "2015 - 2022",
-        },
-        {
-          company: "Company W",
-          position: "Team Lead",
-          duration: "2010 - 2015",
-        },
-      ],
-      education: {
-        institution: "University Z",
-        degree: "MBA",
-        graduationYear: "2010",
-      },
-      skills: ["Java", "Spring Boot", "Project Management", "Agile", "Scrum"],
-    },
-    {
-      name: "Sara Connor",
-      age: 28,
-      gender: "Female",
-      workRecord: "",
-      workExperience: [],
-      education: {
-        institution: "University Q",
-        degree: "B.A. in English Literature",
-        graduationYear: "2016",
-      },
-      skills: ["Python", "Django", "Flask", "JavaScript"],
-    },
-    {
-      name: "David Lee",
-      age: 32,
-      gender: "Male",
-      workRecord: "6 years at Company M",
-      workExperience: [
-        {
-          company: "Company M",
-          position: "System Analyst",
-          duration: "2017 - 2023",
-        },
-        {
-          company: "Company N",
-          position: "IT Support",
-          duration: "2015 - 2017",
-        },
-      ],
-      education: {
-        institution: "University M",
-        degree: "B.Sc. in Information Technology",
-        graduationYear: "2015",
-      },
-      skills: ["C#", ".NET", "SQL Server", "Azure", "PowerShell"],
-    },
-    {
-      name: "Emily Davis",
-      age: 26,
-      gender: "Female",
-      workRecord: "2 years at Company P",
-      workExperience: [
-        {
-          company: "Company P",
-          position: "Marketing Specialist",
-          duration: "2021 - 2023",
-        },
-      ],
-      education: {
-        institution: "University P",
-        degree: "B.B.A. in Marketing",
-        graduationYear: "2021",
-      },
-      skills: ["JavaScript", "HTML", "CSS", "React", "Redux"],
-    },
-    {
-      name: "Robert Brown",
-      age: 38,
-      gender: "Male",
-      workRecord: "10 years at Company R",
-      workExperience: [
-        {
-          company: "Company R",
-          position: "Senior Software Developer",
-          duration: "2013 - 2023",
-        },
-        {
-          company: "Company S",
-          position: "Software Developer",
-          duration: "2008 - 2013",
-        },
-      ],
-      education: {
-        institution: "University R",
-        degree: "M.Sc. in Software Engineering",
-        graduationYear: "2008",
-      },
-      skills: ["C++", "Java", "Python", "Algorithms", "Data Structures"],
-    },
-    {
-      name: "Olivia White",
-      age: 29,
-      gender: "Female",
-      workRecord: "4 years at Company T",
-      workExperience: [
-        {
-          company: "Company T",
-          position: "Graphic Designer",
-          duration: "2019 - 2023",
-        },
-        {
-          company: "Company U",
-          position: "Junior Graphic Designer",
-          duration: "2017 - 2019",
-        },
-      ],
-      education: {
-        institution: "Art Institute",
-        degree: "B.A. in Graphic Design",
-        graduationYear: "2017",
-      },
-      skills: ["HTML", "CSS", "JavaScript", "UI/UX Design", "Figma"],
-    },
-    {
-      name: "Chris Martin",
-      age: 45,
-      gender: "Male",
-      workRecord: "15 years at Company V",
-      workExperience: [
-        {
-          company: "Company V",
-          position: "Chief Financial Officer",
-          duration: "2008 - 2023",
-        },
-        {
-          company: "Company W",
-          position: "Finance Manager",
-          duration: "2003 - 2008",
-        },
-      ],
-      education: {
-        institution: "University V",
-        degree: "M.Sc. in Finance",
-        graduationYear: "2003",
-      },
-      skills: ["Excel", "VBA", "Python", "R", "SQL"],
-    },
-    {
-      name: "Sophia Wilson",
-      age: 27,
-      gender: "Female",
-      workRecord: "5 years at Company X",
-      workExperience: [
-        {
-          company: "Company X",
-          position: "HR Specialist",
-          duration: "2018 - 2023",
-        },
-      ],
-      education: {
-        institution: "University X",
-        degree: "B.Sc. in Human Resources",
-        graduationYear: "2018",
-      },
-      skills: ["Python", "JavaScript", "SQL", "Tableau"],
-    },
-    // Add more resumes here...
-  ];
-
+  const [resumes, setResumes] = useState([]);
+  const [filteredResumes, setFilteredResumes] = useState([]);
   const [query, setQuery] = useState("");
-  const [filteredResumes, setFilteredResumes] = useState(resumes); // Show all initially
-  const [genderFilter, setGenderFilter] = useState("");
-  const [workRecordFilter, setWorkRecordFilter] = useState(false);
-  const [minAge, setMinAge] = useState("");
-  const [maxAge, setMaxAge] = useState("");
-  const [companyFilter, setCompanyFilter] = useState("");
-  const [positionFilter, setPositionFilter] = useState("");
-  const [skillFilter, setSkillFilter] = useState("");
-  const [selectedResume, setSelectedResume] = useState(null); // State to hold the selected resume details
   const navigate = useNavigate();
 
-  const filterResumes = () => {
-    let results = resumes;
+  useEffect(() => {
+    fetchProfilesData();
+  }, []);
 
-    // Apply gender filter if selected
-    if (genderFilter) {
-      results = results.filter(
-        (resume) => resume.gender.toLowerCase() === genderFilter.toLowerCase()
-      );
+  const fetchProfilesData = async () => {
+    try {
+      const result = await getProfiles(query);
+
+      if (result.status_code === 200) {
+        const mappedResumes = result.data
+          .filter((resume) => resume.profile !== null)
+          .map((resume) => mapResumeData(resume));
+        setResumes(mappedResumes);
+      }
+    } catch (error) {
+      console.error("Error fetch profile data:", error.message);
     }
-
-    // Apply work record filter if selected
-    if (workRecordFilter) {
-      results = results.filter((resume) => resume.workRecord.trim() !== "");
-    }
-
-    // Apply age range filter if both min and max age are provided
-    if (minAge || maxAge) {
-      results = results.filter((resume) => {
-        const age = resume.age;
-        const isWithinMin = minAge ? age >= parseInt(minAge) : true;
-        const isWithinMax = maxAge ? age <= parseInt(maxAge) : true;
-        return isWithinMin && isWithinMax;
-      });
-    }
-
-    // Company filter
-    if (companyFilter) {
-      results = results.filter((resume) =>
-        resume.workExperience.some((exp) =>
-          exp.company.toLowerCase().includes(companyFilter.toLowerCase())
-        )
-      );
-    }
-
-    // Position filter
-    if (positionFilter) {
-      results = results.filter((resume) =>
-        resume.workExperience.some((exp) =>
-          exp.position.toLowerCase().includes(positionFilter.toLowerCase())
-        )
-      );
-    }
-
-    // Skills filter - focusing on programming languages and technical skills
-    if (skillFilter) {
-      const skillQuery = skillFilter.toLowerCase();
-      results = results.filter((resume) =>
-        resume.skills.some((skill) => skill.toLowerCase().includes(skillQuery))
-      );
-    }
-
-    // Search query filter: This handles the input from the main search bar
-    if (query) {
-      const lowerCaseQuery = query.toLowerCase();
-      results = results.filter(
-        (resume) =>
-          resume.name.toLowerCase().includes(lowerCaseQuery) ||
-          resume.gender.toLowerCase().includes(lowerCaseQuery) ||
-          resume.workRecord.toLowerCase().includes(lowerCaseQuery) ||
-          resume.workExperience.some(
-            (exp) =>
-              exp.company.toLowerCase().includes(lowerCaseQuery) ||
-              exp.position.toLowerCase().includes(lowerCaseQuery)
-          ) ||
-          resume.skills.some((skill) =>
-            skill.toLowerCase().includes(lowerCaseQuery)
-          )
-      );
-    }
-
-    setFilteredResumes(results);
   };
 
-  // Handler functions for each filter
-  const handleGenderChange = (e) => {
-    setGenderFilter(e.target.value);
-    filterResumes();
+  const mapResumeData = (data) => {
+    return {
+      id: data?.id ?? "",
+      email: data?.email ?? "",
+      first_name: data?.first_name ?? "",
+      last_name: data?.last_name ?? "",
+      mobile_number: data?.mobile_number ?? "",
+      profile: {
+        name: data?.profile?.name ?? "",
+        email: data?.profile?.email ?? "",
+        mobile_number: data?.profile?.mobile_number ?? "",
+        skills: data?.profile?.skills ?? [],
+        college_name: data?.profile?.college_name ?? "",
+        degree: data?.profile?.degree ?? "",
+        designation: data?.profile?.designation ?? [],
+        experience: data?.profile?.experience ?? [],
+        company_names: data?.profile?.company_names ?? "",
+        no_of_pages: data?.profile?.no_of_pages ?? 0,
+        total_experience: data?.profile?.total_experience ?? 0.0,
+      },
+    };
   };
 
-  const handleWorkRecordChange = (e) => {
-    setWorkRecordFilter(e.target.checked);
-    filterResumes();
-  };
+  const handleSearch = async (e) => {
+    e.preventDefault();
 
-  const handleAgeChange = (e, type) => {
-    if (type === "min") {
-      setMinAge(e.target.value);
-    } else {
-      setMaxAge(e.target.value);
-    }
-    filterResumes();
-  };
-
-  const handleCompanyChange = (e) => {
-    setCompanyFilter(e.target.value);
-    filterResumes();
-  };
-
-  const handlePositionChange = (e) => {
-    setPositionFilter(e.target.value);
-    filterResumes();
-  };
-
-  const handleSkillChange = (e) => {
-    setSkillFilter(e.target.value);
-    filterResumes();
-  };
-
-  // Updated function to set the selected resume when the View button is clicked
-  const handleViewDetails = (resume) => {
-    // setSelectedResume(resume); // Set the selected resume to show full details
-    navigate("/resume");
-  };
-
-  // Function to go back to the resume list view
-  const handleBackToList = () => {
-    setSelectedResume(null); // Reset to show the list again
+    await fetchProfilesData();
   };
 
   return (
     <div style={styles.container}>
       <div style={styles.mainContent}>
-        <form onSubmit={(e) => e.preventDefault()} style={styles.form}>
+        <form onSubmit={handleSearch} style={styles.form}>
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search by gender or work record..."
+            placeholder="Search by skill..."
             style={styles.input}
           />
           <button type="submit" style={styles.button}>
@@ -367,21 +72,20 @@ const SearchPage = () => {
           </button>
         </form>
         <div style={styles.resultsContainer}>
-          {filteredResumes.length > 0
-            ? filteredResumes.map((resume, index) => (
+          {resumes.length > 0
+            ? resumes.map((resume, index) => (
                 <div key={index} style={styles.resultItem}>
-                  <h3 style={styles.resultTitle}>{resume.name}</h3>
+                  <h3 style={styles.resultTitle}>
+                    {resume.first_name + " " + resume.last_name}
+                  </h3>
                   <p>
-                    <strong>Age:</strong> {resume.age}
+                    <strong>Email:</strong> {resume.email}
                   </p>
                   <p>
-                    <strong>Gender:</strong> {resume.gender}
+                    <strong>Phone:</strong> {resume.mobile_number}
                   </p>
                   <p>
-                    <strong>Work Record:</strong>{" "}
-                    {resume.workRecord
-                      ? resume.workRecord
-                      : "No work record available"}
+                    <strong>Skills:</strong> {resume.profile.skills.join(", ")}
                   </p>
                   <button
                     style={styles.viewButton}
