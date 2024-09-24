@@ -7,7 +7,7 @@ import HomePage from "./pages/HomePage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import ResumePage from "./pages/ResumePage.jsx";
 import SearchPage from "./pages/SearchPage.jsx";
-import SignUpPage from "./pages/SignUpPage.jsx";
+import RegisterPage from "./pages/RegisterPage.jsx";
 import UploadPage from "./pages/UploadPage.jsx";
 
 function App() {
@@ -18,7 +18,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/register" element={<RegisterPage />} />
           <Route path="/upload" element={<UploadPage />} />
           <Route path="/resume" element={<ResumePage />} />
           <Route path="/search" element={<SearchPage />} />

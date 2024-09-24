@@ -1,4 +1,7 @@
 // AppConfig.js
-export const AppConfig = {
+
+const AppConfig = {
   API_URL: import.meta.env.VITE_API_URL,
 };
+
+export default AppConfig;
