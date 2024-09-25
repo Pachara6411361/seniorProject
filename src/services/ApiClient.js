@@ -48,3 +48,16 @@ export const getProfileById = async (profileId) => {
   const response = await apiClient.get(`/profiles/${profileId}`);
   return response.data;
 };
+
+export const uploadResume = async (userId, payload) => {
+  const response = await apiClient.put(
+    `/jobseekers/${userId}/resumes`,
+    payload,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+  return response.data;
+};

@@ -2,7 +2,7 @@
 import React, { useRef, useState } from "react";
 import styled from "styled-components";
 
-const DropFileInput = ({ onFileChange }) => {
+const DropFileInput = ({ onFileChange = (_) => {} }) => {
   const wrapperRef = useRef(null);
   const [fileList, setFileList] = useState([]);
 
@@ -18,8 +18,10 @@ const DropFileInput = ({ onFileChange }) => {
 
   const onDrop = (e) => {
     e.preventDefault();
+    
     wrapperRef.current.classList.remove("dragover");
     const files = Array.from(e.dataTransfer.files);
+
     if (files.length > 0) {
       const updatedList = [...fileList, ...files];
       setFileList(updatedList);
@@ -50,21 +52,21 @@ const DropFileInput = ({ onFileChange }) => {
 
   return (
     <DropFileInputContainer>
-      <Dropzone
-        ref={wrapperRef}
-        onDragEnter={onDragEnter}
-        onDragLeave={onDragLeave}
-        onDrop={onDrop}
-        onClick={() => wrapperRef.current.querySelector("input").click()}
-      >
-        <input type="file" onChange={onFileDrop} multiple hidden />
-        <DropText>
-          Drag & Drop your files here or <span>Click to upload</span>
-        </DropText>
-        <SubText>Maximum file size 50 MB.</SubText>
-      </Dropzone>
-
-      {fileList.length > 0 && (
+      {fileList.length == 0 ? (
+        <Dropzone
+          ref={wrapperRef}
+          onDragEnter={onDragEnter}
+          onDragLeave={onDragLeave}
+          onDrop={onDrop}
+          onClick={() => wrapperRef.current.querySelector("input").click()}
+        >
+          <input type="file" accept=".pdf" onChange={onFileDrop} hidden />
+          <DropText>
+            <span>Click to upload</span>
+          </DropText>
+          <SubText>Maximum file size 50 MB.</SubText>
+        </Dropzone>
+      ) : (
         <FileList>
           {fileList.map((file, index) => (
             <FileItem key={index}>
@@ -90,19 +92,22 @@ const DropFileInputContainer = styled.div`
   align-items: center;
   padding: 40px;
   background-color: #f5f5f5;
-  min-height: 100vh;
+  box-sizing: border-box;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 `;
 
 const Dropzone = styled.div`
   width: 80%;
   max-width: 600px;
   padding: 40px;
+  margin: 10px;
   border: 2px dashed #ccc;
   border-radius: 10px;
   background-color: #f9f9f9;
   text-align: center;
-  margin-bottom: 20px;
   cursor: pointer;
+  min-width: 350px;
   &:hover {
     background-color: #e0e0e0;
   }
@@ -136,11 +141,13 @@ const FileItem = styled.div`
   align-items: center;
   padding: 10px 0;
   border-bottom: 1px solid #ddd;
+  border-top: 1px solid #ddd;
 `;
 
 const FileDetails = styled.div`
   display: flex;
   align-items: center;
+  margin-right: 20px;
 `;
 
 const FileName = styled.span`
