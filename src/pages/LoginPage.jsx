@@ -114,7 +114,6 @@ const FormContainer = styled.div`
   align-items: center;
   height: 100vh;
   padding: 20px;
-  background-color: #f5f5f5;
   box-sizing: border-box;
 `;
 
