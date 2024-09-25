@@ -4,7 +4,6 @@ import { getProfiles } from "../services/ApiClient";
 
 const SearchPage = () => {
   const [resumes, setResumes] = useState([]);
-  const [filteredResumes, setFilteredResumes] = useState([]);
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
 
@@ -52,7 +51,7 @@ const SearchPage = () => {
 
   const handleSearch = async (e) => {
     e.preventDefault();
-
+    setQuery(query.trim());
     await fetchProfilesData();
   };
 
@@ -72,30 +71,32 @@ const SearchPage = () => {
           </button>
         </form>
         <div style={styles.resultsContainer}>
-          {resumes.length > 0
-            ? resumes.map((resume, index) => (
-                <div key={index} style={styles.resultItem}>
-                  <h3 style={styles.resultTitle}>
-                    {resume.first_name + " " + resume.last_name}
-                  </h3>
-                  <p>
-                    <strong>Email:</strong> {resume.email}
-                  </p>
-                  <p>
-                    <strong>Phone:</strong> {resume.mobile_number}
-                  </p>
-                  <p>
-                    <strong>Skills:</strong> {resume.profile.skills.join(", ")}
-                  </p>
-                  <button
-                    style={styles.viewButton}
-                    onClick={() => handleViewDetails(resume)}
-                  >
-                    View
-                  </button>
-                </div>
-              ))
-            : query && <p style={styles.noResults}>No results found</p>}
+          {resumes.length > 0 ? (
+            resumes.map((resume, index) => (
+              <div key={index} style={styles.resultItem}>
+                <h3 style={styles.resultTitle}>
+                  {resume.first_name + " " + resume.last_name}
+                </h3>
+                <p>
+                  <strong>Email:</strong> {resume.email}
+                </p>
+                <p>
+                  <strong>Phone:</strong> {resume.mobile_number}
+                </p>
+                <p>
+                  <strong>Skills:</strong> {resume.profile.skills.join(", ")}
+                </p>
+                <button
+                  style={styles.viewButton}
+                  onClick={() => handleViewDetails(resume)}
+                >
+                  View
+                </button>
+              </div>
+            ))
+          ) : (
+            <p style={styles.noResults}>No results found</p>
+          )}
         </div>
       </div>
     </div>

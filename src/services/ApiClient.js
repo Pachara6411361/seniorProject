@@ -38,7 +38,9 @@ export const loginRecruiter = async (payload) => {
 };
 
 export const getProfiles = async (query) => {
-  const response = await apiClient.get(`/profiles?skill=${query}`);
+  let skillQuery = query ? `?skill=${query}` : "";
+
+  const response = await apiClient.get(`/profiles${skillQuery}`);
   return response.data;
 };
 
