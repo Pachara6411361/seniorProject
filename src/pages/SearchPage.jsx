@@ -88,7 +88,7 @@ const SearchPage = () => {
                 </p>
                 <button
                   style={styles.viewButton}
-                  onClick={() => handleViewDetails(resume)}
+                  onClick={() => navigate("/resume/detail/" + resume.id)}
                 >
                   View
                 </button>

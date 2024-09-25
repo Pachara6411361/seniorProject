@@ -10,6 +10,7 @@ import SearchPage from "./pages/SearchPage.jsx";
 import RegisterPage from "./pages/RegisterPage.jsx";
 import UploadPage from "./pages/UploadPage.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import ResumeDetailPage from "./pages/ResumeDetailPage.jsx";
 
 function App() {
   return (
@@ -32,6 +33,10 @@ function App() {
           <Route
             path="/search"
             element={<ProtectedRoute element={<SearchPage />} />}
+          />
+          <Route
+            path="/resume/detail/:userId"
+            element={<ProtectedRoute element={<ResumeDetailPage />} />}
           />
         </Routes>
       </Router>
