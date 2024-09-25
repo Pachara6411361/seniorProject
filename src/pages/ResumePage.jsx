@@ -139,12 +139,13 @@ export default ResumePage;
 const ResumeContainer = styled.div`
   padding: 40px;
   max-width: 800px;
-  margin: 0 auto;
+  margin: 60px auto 0 auto;
   background-color: #f5f5f5;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   color: green; /* Ensure all text inside this container is green */
-`;
+  box-sizing: border-box;
+  `;
 
 const Title = styled.h1`
   text-align: center;
