@@ -41,6 +41,8 @@ const ResumeDetailPage = () => {
 
       if (result.status_code === 200 && result.data.profile !== null) {
         setResumeData(mapResumeData(result.data));
+      } else {
+        navigate("/search");
       }
     } catch (error) {
       console.error("Error fetch profile data:", error.message);
@@ -55,15 +57,15 @@ const ResumeDetailPage = () => {
       last_name: data?.last_name ?? "",
       mobile_number: data?.mobile_number ?? "",
       profile: {
-        name: data?.profile?.name ?? "",
-        email: data?.profile?.email ?? "",
-        mobile_number: data?.profile?.mobile_number ?? "",
+        name: data?.profile?.name ?? "-",
+        email: data?.profile?.email ?? "-",
+        mobile_number: data?.profile?.mobile_number ?? "-",
         skills: data?.profile?.skills ?? [],
-        college_name: data?.profile?.college_name ?? "",
-        degree: data?.profile?.degree ?? "",
+        college_name: data?.profile?.college_name ?? "-",
+        degree: data?.profile?.degree ?? "-",
         designation: data?.profile?.designation ?? [],
         experience: data?.profile?.experience ?? [],
-        company_names: data?.profile?.company_names ?? "",
+        company_names: data?.profile?.company_names ?? "-",
         no_of_pages: data?.profile?.no_of_pages ?? 0,
         total_experience: data?.profile?.total_experience ?? 0.0,
       },
@@ -90,14 +92,16 @@ const ResumeDetailPage = () => {
         </DisplayContainer>
       </Section>
 
-      <Section>
-        <SectionTitle>Work Experience</SectionTitle>
-        <ul>
-          {resumeData.profile.designation.map((item, index) => (
-            <li key={index}>{item}</li>
-          ))}
-        </ul>
-      </Section>
+      {resumeData.profile.designation.length > 0 && (
+        <Section>
+          <SectionTitle>Work Experience</SectionTitle>
+          <ul>
+            {resumeData.profile.designation.map((item, index) => (
+              <li key={index}>{item}</li>
+            ))}
+          </ul>
+        </Section>
+      )}
 
       <Section>
         <SectionTitle>Education</SectionTitle>
