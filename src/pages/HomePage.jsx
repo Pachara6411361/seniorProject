@@ -7,10 +7,9 @@ const HomePage = () => {
     <Container
       fluid
       style={{
+        padding:"50px",
         height: "100vh",
         display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
       }}
     >
       {/* Left Column */}
@@ -42,8 +41,8 @@ const HomePage = () => {
       >
         <h1>Resume Extraction Application</h1>
         <p>
-          Welcome to our Resume Extraction platform, where advanced algorithms
-          help to extract and organize key information from resumes. Our system
+          Welcome to our Resume Extraction App, where advanced algorithms help
+          to extract and organize key information from resumes. Our system
           efficiently handles the extraction of skills, experience, education,
           and more, making the recruitment process faster and easier.
         </p>
