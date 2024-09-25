@@ -7,6 +7,7 @@ import { uploadResume } from "../services/ApiClient";
 
 const UploadPage = () => {
   const [selectedFile, setSelectedFile] = useState(null);
+  const [loading, setLoading] = useState(false); // Added loading state
   const { userId } = useAuth();
   const navigate = useNavigate();
 
@@ -16,6 +17,7 @@ const UploadPage = () => {
 
   const handleUpload = async (e) => {
     e.preventDefault();
+    setLoading(true); // Set loading to true when upload starts
 
     const formData = new FormData();
     formData.append("resume_file", selectedFile);
@@ -27,7 +29,9 @@ const UploadPage = () => {
         navigate("/resume");
       }
     } catch (error) {
-      console.error("Error uploading resume in :", error.message);
+      console.error("Error uploading resume in:", error.message);
+    } finally {
+      setLoading(false); // Reset loading state once the upload completes or fails
     }
   };
 
@@ -36,7 +40,8 @@ const UploadPage = () => {
       <UploadContainer>
         <Title>File Drag and Drop Here</Title>
         <DropFileInput onFileChange={onFileChange} />
-        {selectedFile && <Button type="submit">Upload</Button>}
+        {selectedFile && !loading && <Button type="submit">Upload</Button>}
+        {loading && <LoadingMessage>Uploading, please wait...</LoadingMessage>}
       </UploadContainer>
     </form>
   );
@@ -74,4 +79,10 @@ const Button = styled.button`
   &:hover {
     background-color: #357ae8;
   }
+`;
+
+const LoadingMessage = styled.p`
+  color: #ffffff;
+  font-size: 1.2rem;
+  margin-top: 20px;
 `;
