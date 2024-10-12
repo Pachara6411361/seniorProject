@@ -39,9 +39,9 @@ const HomePage = () => {
           width: "100%",
         }}
       >
-        <h1>Resume Extraction Application</h1>
+        <h1>CV Query: a tool for HR Application</h1>
         <p>
-          Welcome to our Resume Extraction App, where advanced algorithms help
+          Welcome to our CV Query: a tool for HR App, where advanced algorithms help
           to extract and organize key information from resumes. Our system
           efficiently handles the extraction of skills, experience, education,
           and more, making the recruitment process faster and easier.
