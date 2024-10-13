@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import DropFileInput from "../components/DropFileInput";
+import DropFileInput from "../componentss/DropFileInput";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/AuthContext";
