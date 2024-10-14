@@ -55,6 +55,21 @@ const SearchPage = () => {
     await fetchProfilesData();
   };
 
+  const highlightText = (text, search) => {
+    if (!search) return text;
+    const regex = new RegExp(`(${search})`, "gi");
+    const parts = text.split(regex);
+    return parts.map((part, index) =>
+      part.toLowerCase() === search.toLowerCase() ? (
+        <span key={index} style={styles.skillHighlight}>
+          {part}
+        </span>
+      ) : (
+        part
+      )
+    );
+  };
+
   return (
     <div style={styles.container}>
       <div style={styles.mainContent}>
@@ -84,7 +99,13 @@ const SearchPage = () => {
                   <strong>Phone:</strong> {resume.mobile_number}
                 </p>
                 <p>
-                  <strong>Skills:</strong> {resume.profile.skills.join(", ")}
+                  <strong>Skills: </strong>
+                  {resume.profile.skills.map((skill, index) => (
+                    <span key={index}>
+                      {highlightText(skill, query)}
+                      {index < resume.profile.skills.length - 1 ? ", " : ""}
+                    </span>
+                  ))}
                 </p>
                 <button
                   style={styles.viewButton}
@@ -231,6 +252,7 @@ const styles = {
     color: "#ffffff",
     fontWeight: "bold",
   },
+  skillHighlight: { fontWeight: "bold", color:"#fff", background:"black" },
 };
 
 export default SearchPage;
