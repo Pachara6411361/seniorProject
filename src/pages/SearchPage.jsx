@@ -81,10 +81,11 @@ const SearchPage = () => {
       <div style={styles.mainContent}>
         <form onSubmit={handleSearch} style={styles.form}>
           <input
+            name="search"
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search by skill..."
+            placeholder="Search skills (e.g. JavaScript, HTML, CSS)"
             style={styles.input}
           />
           <button type="submit" style={styles.button}>
