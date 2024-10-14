@@ -57,10 +57,16 @@ const SearchPage = () => {
 
   const highlightText = (text, search) => {
     if (!search) return text;
-    const regex = new RegExp(`(${search})`, "gi");
+
+    const searchTerms = search
+      .split(",")
+      .map((term) => term.trim())
+      .filter(Boolean);
+
+    const regex = new RegExp(`(${searchTerms.join("|")})`, "gi");
     const parts = text.split(regex);
     return parts.map((part, index) =>
-      part.toLowerCase() === search.toLowerCase() ? (
+      searchTerms.includes(part.toLowerCase()) ? (
         <span key={index} style={styles.skillHighlight}>
           {part}
         </span>
@@ -252,7 +258,7 @@ const styles = {
     color: "#ffffff",
     fontWeight: "bold",
   },
-  skillHighlight: { fontWeight: "bold", color:"#fff", background:"black" },
+  skillHighlight: { fontWeight: "bold", color: "#fff", background: "black" },
 };
 
 export default SearchPage;
