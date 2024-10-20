@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 import { getProfileById } from "../services/ApiClient";
+import { FaFilePdf } from "react-icons/fa";
 
 const initialResumeData = {
   id: "",
@@ -9,6 +10,7 @@ const initialResumeData = {
   first_name: "",
   last_name: "",
   mobile_number: "",
+  resume_url: "",
   profile: {
     name: "",
     email: "",
@@ -56,6 +58,7 @@ const ResumeDetailPage = () => {
       first_name: data?.first_name ?? "",
       last_name: data?.last_name ?? "",
       mobile_number: data?.mobile_number ?? "",
+      resume_url: data?.resume_url ?? "",
       profile: {
         name: data?.profile?.name ?? "-",
         email: data?.profile?.email ?? "-",
@@ -74,6 +77,17 @@ const ResumeDetailPage = () => {
 
   return (
     <ResumeContainer>
+      <IconContainer>
+        {resumeData.resume_url && (
+          <PdfButton
+            href={resumeData.resume_url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FaFilePdf size={30} />
+          </PdfButton>
+        )}
+      </IconContainer>
       <Title>Resume</Title>
 
       <Section>
@@ -136,6 +150,11 @@ const ResumeDetailPage = () => {
 export default ResumeDetailPage;
 
 // Set all text components to green
+
+const IconContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
 
 const ResumeContainer = styled.div`
   padding: 40px;
@@ -207,5 +226,42 @@ const Button = styled.button`
 
   &:hover {
     background-color: #357ae8;
+  }
+`;
+
+const PdfButton = styled.a`
+  background-color: transparent;
+  border: none;
+  color: red; /* Icon color */
+  cursor: pointer;
+  position: relative; /* Make the tooltip relative to the button */
+
+  &:hover {
+    color: darkred; /* Change color on hover */
+  }
+
+  /* Tooltip styling */
+  &:hover::after {
+    content: "View Original Resume PDF"; /* Text for the tooltip */
+    position: absolute;
+    top: -35px; /* Position the tooltip above the icon */
+    right: 50%;
+    transform: translateX(50%);
+    background-color: #333;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+  }
+
+  /* Hide the tooltip by default */
+  &::after {
+    content: "";
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
   }
 `;
