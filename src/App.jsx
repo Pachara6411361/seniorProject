@@ -11,6 +11,7 @@ import RegisterPage from "./pages/RegisterPage.jsx";
 import UploadPage from "./pages/UploadPage.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import ResumeDetailPage from "./pages/ResumeDetailPage.jsx";
+import ManageSkillPage from "./pages/ManageSkillPage.jsx";
 
 function App() {
   return (
@@ -33,6 +34,10 @@ function App() {
           <Route
             path="/search"
             element={<ProtectedRoute element={<SearchPage />} />}
+          />
+          <Route
+            path="/manage-skill"
+            element={<ProtectedRoute element={<ManageSkillPage />} />}
           />
           <Route
             path="/resume/detail/:userId"

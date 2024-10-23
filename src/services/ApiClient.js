@@ -61,3 +61,23 @@ export const uploadResume = async (userId, payload) => {
   );
   return response.data;
 };
+
+export const getSkills = async () => {
+  const response = await apiClient.get(`/skills`);
+  return response.data;
+};
+
+export const addSkill = async (payload) => {
+  const response = await apiClient.post(`/skills`, payload);
+  return response.data;
+};
+
+export const updateSkill = async (skillId, payload) => {
+  const response = await apiClient.put(`/skills/${skillId}`, payload);
+  return response.data;
+};
+
+export const deleteSkill = async (skillId) => {
+  const response = await apiClient.delete(`/skills/${skillId}`);
+  return response.data;
+};

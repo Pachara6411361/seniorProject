@@ -34,6 +34,9 @@ const Navbar = () => {
               <NavLink to="/search" activestyle="true">
                 Search
               </NavLink>
+              <NavLink to="/manage-skill" activestyle="true">
+                Manage Skill
+              </NavLink>
             </>
           )}
 
