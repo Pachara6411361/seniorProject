@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getProfiles } from "../services/ApiClient";
+import { getProfiles, getSkills } from "../services/ApiClient";
 
 const SearchPage = () => {
   const [resumes, setResumes] = useState([]);
   const [query, setQuery] = useState("");
+  const [skills, setSkills] = useState([]);
+  const [filterSkills, setFilterSkills] = useState([]);
+  const [isFilterVisible, setIsFilterVisible] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchProfilesData();
+    fetchSkills();
   }, []);
 
   const fetchProfilesData = async () => {
@@ -23,6 +27,17 @@ const SearchPage = () => {
       }
     } catch (error) {
       console.error("Error fetch profile data:", error.message);
+    }
+  };
+
+  const fetchSkills = async () => {
+    try {
+      const result = await getSkills();
+      if (result.status_code === 200) {
+        setSkills(result.data);
+      }
+    } catch (error) {
+      console.error("Error fetching skills:", error.message);
     }
   };
 
@@ -51,7 +66,12 @@ const SearchPage = () => {
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    setQuery(query.trim());
+    const trimmedQuery = query.trim();
+    setQuery(trimmedQuery);
+    setFilterSkills(
+      trimmedQuery ? trimmedQuery.split(",").map((skill) => skill.trim()) : []
+    );
+
     await fetchProfilesData();
   };
 
@@ -76,6 +96,28 @@ const SearchPage = () => {
     );
   };
 
+  const handleSkillChange = (skillName) => {
+    if (!filterSkills.includes(skillName)) {
+      setFilterSkills((prevData) => [...prevData, skillName]);
+    }
+  };
+
+  const removeSkill = (skillName) => {
+    const newSkills = filterSkills.filter((skill) => skill !== skillName);
+    setFilterSkills((_) => [...newSkills]);
+  };
+
+  const handleApplyFilter = async () => {
+    const newQuery = filterSkills.join(", ");
+    setQuery(newQuery);
+    await fetchProfilesData();
+    toggleFilterVisibility();
+  };
+
+  const toggleFilterVisibility = () => {
+    setIsFilterVisible((prev) => !prev);
+  };
+
   return (
     <div style={styles.container}>
       <div style={styles.mainContent}>
@@ -91,7 +133,52 @@ const SearchPage = () => {
           <button type="submit" style={styles.button}>
             Search
           </button>
+          <button onClick={toggleFilterVisibility} style={styles.button}>
+            {isFilterVisible ? "Hide Filter" : "Show Filter"}
+          </button>
         </form>
+
+        {isFilterVisible && (
+          <div style={styles.filterContainer}>
+            <h3 style={styles.filterTitle}>{"Skill Filter"}</h3>
+            <div style={styles.skillListContainer}>
+              {skills.map((skill, index) => (
+                <div style={styles.skillItem} key={index}>
+                  <input
+                    style={styles.checkbox}
+                    type="checkbox"
+                    id={`skill-${index}`}
+                    checked={filterSkills.some(
+                      (fSkill) =>
+                        fSkill.toLowerCase() === skill.skill_name.toLowerCase()
+                    )}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        // Add skill if checked
+                        handleSkillChange(skill.skill_name);
+                      } else {
+                        // Remove skill if unchecked
+                        removeSkill(skill.skill_name);
+                      }
+                    }}
+                  />
+                  <label htmlFor={`skill-${index}`} style={styles.skillLabel}>
+                    {skill.skill_name}
+                  </label>
+                </div>
+              ))}
+            </div>
+            <div style={styles.buttonContainer}>
+              <button
+                style={styles.applyFilterButton}
+                onClick={handleApplyFilter}
+              >
+                Apply Filter
+              </button>
+            </div>
+          </div>
+        )}
+
         <div style={styles.resultsContainer}>
           {resumes.length > 0 ? (
             resumes.map((resume, index) => (
@@ -202,7 +289,7 @@ const styles = {
     outline: "none",
   },
   button: {
-    marginLeft: "10px",
+    margin: "10px 0px 10px 10px",
     padding: "12px 20px",
     fontSize: "16px",
     borderRadius: "8px",
@@ -211,6 +298,7 @@ const styles = {
     color: "#fff",
     cursor: "pointer",
     transition: "background-color 0.3s ease",
+    width: "250px",
   },
   resultsContainer: {
     width: "100%",
@@ -240,6 +328,22 @@ const styles = {
     marginTop: "10px",
     fontWeight: "bold",
   },
+  applyFilterButton: {
+    padding: "8px 16px",
+    backgroundColor: "#fff",
+    color: "green",
+    border: "1px solid green",
+    borderRadius: "4px",
+    cursor: "pointer",
+    marginTop: "10px",
+    fontWeight: "bold",
+    margin: "20px",
+  },
+  buttonContainer: {
+    display: "flex",
+    justifyContent: "center",
+    width: "100%",
+  },
   resumeDetails: {
     padding: "20px",
     border: "1px solid #ddd",
@@ -259,7 +363,49 @@ const styles = {
     color: "#ffffff",
     fontWeight: "bold",
   },
-  skillHighlight: { fontWeight: "bold", color: "#fff", background: "black" },
+  filterTitle: {
+    margin: "20px",
+    color: "green",
+  },
+  skillHighlight: { fontWeight: "bold", color: "#fff", background: "#4285f4" },
+  filterContainer: {
+    borderRadius: "8px",
+    border: "1px solid #ddd",
+    backgroundColor: "rgb(245, 245, 245)",
+    width: "100%",
+  },
+  skillListContainer: {
+    display: "grid",
+    gridTemplateColumns: "repeat(6, 1fr)",
+    gap: "15px",
+    margin: "20px",
+    padding: "0",
+  },
+  skillItem: {
+    display: "flex",
+    alignItems: "center",
+    margin: "5px 0",
+  },
+  skillLabel: {
+    cursor: "pointer",
+    fontSize: "1rem",
+    color: "green",
+  },
+  checkbox: {
+    marginRight: "10px",
+    width: "20px",
+    height: "20px",
+    cursor: "pointer",
+  },
+  toggleButton: {
+    padding: "10px 15px",
+    margin: "10px 0",
+    backgroundColor: "#4285f4",
+    color: "#fff",
+    border: "none",
+    borderRadius: "4px",
+    cursor: "pointer",
+  },
 };
 
 export default SearchPage;
