@@ -261,7 +261,6 @@ const styles = {
     borderCollapse: "collapse",
     padding: "30px",
     border: "1px solid rgb(204, 204, 204)",
-    borderRadius: "8px",
     marginTop: "30px",
     backgroundColor: "white",
     color: "rgb(255, 255, 255)",
