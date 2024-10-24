@@ -49,6 +49,11 @@ export const getProfileById = async (profileId) => {
   return response.data;
 };
 
+export const updateProfileById = async (userId, payload) => {
+  const response = await apiClient.patch(`/jobseekers/${userId}/profile`, payload);
+  return response.data;
+};
+
 export const uploadResume = async (userId, payload) => {
   const response = await apiClient.put(
     `/jobseekers/${userId}/resumes`,

@@ -1,9 +1,18 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { getProfileById, getSkills } from "../services/ApiClient";
+import {
+  getProfileById,
+  getSkills,
+  addSkill,
+  updateProfileById,
+} from "../services/ApiClient";
 import { useAuth } from "../hooks/AuthContext";
-import { FaFilePdf } from "react-icons/fa";
+import { FaFilePdf, FaTrash, FaPlus } from "react-icons/fa";
+
+const alphaRegex = /^[A-Za-z]+$/;
+const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+const mobileNoRegex = /^\d{10,15}$/;
 
 const initialResumeData = {
   id: "",
@@ -31,6 +40,9 @@ const ResumePage = () => {
   const [resumeData, setResumeData] = useState(initialResumeData);
   const [isEditing, setIsEditing] = useState(false);
   const [availableSkills, setAvailableSkills] = useState([]);
+  const [error, setError] = useState("");
+  const [newSkill, setNewSkill] = useState("");
+  const [errorAdd, setErrorAdd] = useState("");
   const { userId } = useAuth();
   const navigate = useNavigate();
 
@@ -91,11 +103,25 @@ const ResumePage = () => {
 
   const handleEditToggle = () => {
     setIsEditing(!isEditing);
+    setError("");
+    setErrorAdd("");
+    setNewSkill("");
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setResumeData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleProfileInputChange = (e) => {
+    const { name, value } = e.target;
+    setResumeData((prevData) => ({
+      ...prevData,
+      profile: {
+        ...prevData.profile,
+        [name]: value,
+      },
+    }));
   };
 
   const handleExperienceChange = (index, value) => {
@@ -127,36 +153,126 @@ const ResumePage = () => {
     }));
   };
 
-  const handleSkillChange = (index, value) => {
-    const newSkills = [...resumeData.profile.skills];
-    newSkills[index] = value;
+  const handleSkillChange = (skillName) => {
+    if (!resumeData.profile.skills.includes(skillName)) {
+      setResumeData((prevData) => ({
+        ...prevData,
+        profile: {
+          ...prevData.profile,
+          skills: [...prevData.profile.skills, skillName],
+        },
+      }));
+    }
+  };
+
+  const removeSkill = (skillName) => {
+    const newSkills = resumeData.profile.skills.filter(
+      (skill) => skill !== skillName
+    );
     setResumeData((prevData) => ({
       ...prevData,
       profile: { ...prevData.profile, skills: newSkills },
     }));
   };
 
-  const addSkill = () => {
-    setResumeData((prevData) => ({
-      ...prevData,
-      profile: {
-        ...prevData.profile,
-        skills: [...prevData.profile.skills, ""],
-      },
-    }));
+  const handleSave = async () => {
+    if (
+      resumeData.first_name.trim().length < 2 ||
+      !alphaRegex.test(resumeData.first_name)
+    ) {
+      console.log(resumeData.first_name);
+      setError(
+        "First name must be at least 2 characters and contain only alphabetic characters"
+      );
+      return;
+    } else if (
+      resumeData.last_name.trim().length < 2 ||
+      !alphaRegex.test(resumeData.last_name)
+    ) {
+      console.log(resumeData.last_name);
+      setError(
+        "Last name must be at least 2 characters and contain only alphabetic characters"
+      );
+      return;
+    } else if (!emailRegex.test(resumeData.email)) {
+      console.log(resumeData.email);
+      setError("Invalid email format");
+      return;
+    } else if (!mobileNoRegex.test(resumeData.mobile_number)) {
+      console.log(resumeData.mobile_number);
+      setError("Mobile No. must be 10 - 15 digits");
+      return;
+    }
+
+    const filteredSkills = resumeData.profile.skills.filter(
+      (skill) => skill.trim() !== ""
+    );
+    const filteredDesignation = resumeData.profile.designation.filter(
+      (designation) => designation.trim() !== ""
+    );
+
+    const payload = {
+      email: resumeData.email,
+      first_name: resumeData.first_name,
+      last_name: resumeData.last_name,
+      mobile_number: resumeData.mobile_number,
+      skills: filteredSkills,
+      college_name: resumeData.profile.college_name,
+      degree: resumeData.profile.degree,
+      designation: filteredDesignation,
+    };
+
+    try {
+      const result = await updateProfileById(resumeData.id, payload);
+      if (result.status_code === 200) {
+        setResumeData((prevData) => ({
+          ...prevData,
+          profile: {
+            ...prevData.profile,
+            skills: filteredSkills,
+            designation: filteredDesignation,
+          },
+        }));
+        setIsEditing(false);
+        setError("");
+        setErrorAdd("");
+        setNewSkill("");
+      } else if (result.status_code === 400) {
+        setError(result.status_message);
+      }
+    } catch (error) {
+      console.error("Error adding skill:", error.message);
+    }
   };
 
-  const removeSkill = (index) => {
-    const newSkills = resumeData.profile.skills.filter((_, i) => i !== index);
-    setResumeData((prevData) => ({
-      ...prevData,
-      profile: { ...prevData.profile, skills: newSkills },
-    }));
-  };
+  const handleAddSkill = async () => {
+    if (newSkill.trim() === "") {
+      setErrorAdd("Skill name cannot be empty.");
+      return;
+    }
 
-  const handleSave = () => {
-    console.log("Save resume data", resumeData);
-    setIsEditing(false);
+    if (
+      availableSkills.some(
+        (skill) =>
+          skill.skill_name.toLowerCase() === newSkill.trim().toLowerCase()
+      )
+    ) {
+      setErrorAdd("Skill name already exists.");
+      return;
+    }
+
+    try {
+      const result = await addSkill({ skill_name: newSkill.trim() });
+      if (result.status_code === 201) {
+        setAvailableSkills([...availableSkills, result.data]);
+        setNewSkill("");
+        setErrorAdd("");
+      } else if (result.status_code === 400) {
+        setErrorAdd(result.status_message);
+      }
+    } catch (error) {
+      console.error("Error adding skill:", error.message);
+    }
   };
 
   return (
@@ -175,30 +291,37 @@ const ResumePage = () => {
       <Title>Resume</Title>
 
       {isEditing ? (
-        <form onSubmit={(e) => e.preventDefault()}>
+        <>
           <Section>
             <SectionTitle>Personal Details</SectionTitle>
             <DisplayContainer>
               <strong>First Name:</strong>
               <InputField
+                type="text"
+                placeholder="First name"
                 name="first_name"
                 value={resumeData.first_name}
                 onChange={handleInputChange}
               />
               <strong>Last Name:</strong>
               <InputField
+                type="text"
+                placeholder="Last name"
                 name="last_name"
                 value={resumeData.last_name}
                 onChange={handleInputChange}
               />
               <strong>Email:</strong>
               <InputField
+                placeholder="Email"
                 name="email"
                 value={resumeData.email}
                 onChange={handleInputChange}
               />
               <strong>Mobile No:</strong>
               <InputField
+                type="text"
+                placeholder="Phone number"
                 name="mobile_number"
                 value={resumeData.mobile_number}
                 onChange={handleInputChange}
@@ -211,16 +334,19 @@ const ResumePage = () => {
             {resumeData.profile.designation.map((exp, index) => (
               <ListContainer key={index}>
                 <InputField
-                  placeholder="Role"
+                  placeholder="Role or Experience"
                   value={exp}
                   onChange={(e) =>
                     handleExperienceChange(index, e.target.value)
                   }
                 />
                 <ButtonContainer>
-                  <Button onClick={() => removeExperience(index)}>
-                    Remove Experience
-                  </Button>
+                  <IconButton
+                    onClick={() => removeExperience(index)}
+                    style={{ backgroundColor: "red" }}
+                  >
+                    <FaTrash size={20} />
+                  </IconButton>
                 </ButtonContainer>
               </ListContainer>
             ))}
@@ -234,44 +360,80 @@ const ResumePage = () => {
             <DisplayContainer>
               <strong>Institution:</strong>
               <InputField
+                type="text"
+                placeholder="Institution"
                 name="college_name"
                 value={resumeData.profile.college_name}
-                onChange={handleInputChange}
+                onChange={handleProfileInputChange}
               />
               <strong>Degree:</strong>
               <InputField
+                type="text"
+                placeholder="Degree"
                 name="degree"
                 value={resumeData.profile.degree}
-                onChange={handleInputChange}
+                onChange={handleProfileInputChange}
               />
             </DisplayContainer>
           </Section>
 
           <Section>
             <SectionTitle>Skills</SectionTitle>
-            {resumeData.profile.skills.map((skill, index) => (
-              <ListContainer key={index}>
-                <InputField
-                  placeholder="Skill Name"
-                  value={skill}
-                  onChange={(e) => handleSkillChange(index, e.target.value)}
-                />
-                <ButtonContainer>
-                  <Button onClick={() => removeSkill(index)}>
-                    Remove Skill
-                  </Button>
-                </ButtonContainer>
-              </ListContainer>
-            ))}
-            <ButtonContainer>
-              <Button onClick={addSkill}>Add Skill</Button>
-            </ButtonContainer>
+            <SkillListContainer>
+              {availableSkills.map((availableSkill, index) => (
+                <SkillItem key={index}>
+                  <Checkbox
+                    type="checkbox"
+                    id={`skill-${index}`}
+                    checked={resumeData.profile.skills.includes(
+                      availableSkill.skill_name
+                    )}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        // Add skill if checked
+                        handleSkillChange(availableSkill.skill_name);
+                      } else {
+                        // Remove skill if unchecked
+                        removeSkill(availableSkill.skill_name);
+                      }
+                    }}
+                  />
+                  <Label htmlFor={`skill-${index}`}>
+                    {availableSkill.skill_name}
+                  </Label>
+                </SkillItem>
+              ))}
+            </SkillListContainer>
+            <ListContainer>
+              <InputField
+                type="text"
+                placeholder="New Skill Name"
+                value={newSkill}
+                onChange={(e) => setNewSkill(e.target.value)}
+              />
+              <ButtonContainer>
+                <IconButton
+                  onClick={handleAddSkill}
+                  style={{ backgroundColor: "green" }}
+                >
+                  <FaPlus size={20} />
+                </IconButton>
+              </ButtonContainer>
+            </ListContainer>
+            {errorAdd && <ErrorMessage>{errorAdd}</ErrorMessage>}
           </Section>
+
+          <SectionDivider></SectionDivider>
+
+          <ErrorSection>
+            {error && <ErrorMessage>{error}</ErrorMessage>}
+          </ErrorSection>
 
           <ButtonContainer>
             <Button onClick={handleSave}>Save</Button>
+            <Button onClick={handleEditToggle}>Cancel</Button>
           </ButtonContainer>
-        </form>
+        </>
       ) : (
         <>
           <Section>
@@ -371,12 +533,23 @@ const Section = styled.div`
   color: green; /* Ensure section text is green */
 `;
 
+const ErrorSection = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 const SectionTitle = styled.h2`
   font-size: 1.8rem;
   color: green; /* Section title in green */
   margin-bottom: 10px;
   border-bottom: 2px solid #4285f4;
   padding-bottom: 5px;
+`;
+
+const SectionDivider = styled.div`
+  border-bottom: 2px solid #4285f4;
+  margin-bottom: 10px;
 `;
 
 const DisplayContainer = styled.div`
@@ -471,5 +644,53 @@ const InputField = styled.input`
 `;
 
 const ListContainer = styled.div`
+  display: flex;
   margin-bottom: 20px;
+`;
+
+const IconButton = styled.button`
+  background-color: #4285f4;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  margin: 10px;
+
+  &:hover {
+    background-color: #357ae8;
+  }
+`;
+
+const ErrorMessage = styled.p`
+  color: red;
+  font-size: 1.2rem;
+`;
+
+const SkillListContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin: 20px;
+  padding: 0;
+`;
+
+const SkillItem = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 5px 0;
+`;
+
+const Checkbox = styled.input`
+  margin-right: 10px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+`;
+
+const Label = styled.label`
+  cursor: pointer;
+  font-size: 1rem;
 `;
